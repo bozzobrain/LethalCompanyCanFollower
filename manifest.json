@@ -1,0 +1,9 @@
+{
+  "name": "CanFollower",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/bozzobrain/LethalCompanyCanFollower/releases",
+  "description": "Your friend drinks a lot of soda. Make him feel like he leaves cans everywhere",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2100"
+  ]
+}
