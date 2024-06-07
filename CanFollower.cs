@@ -7,7 +7,7 @@ namespace BetterDoorWarning
 	[HarmonyPatch]
 	internal class CanFollowerFunctions
 	{
-		private bool lastCheckEnemy = false;
+		public string CanPlayerName { get; set; } = string.Empty;
 
 		[HarmonyPatch(typeof(PlayerActions), "OnPingScan")]
 		private static class Patch
