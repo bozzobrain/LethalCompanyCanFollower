@@ -2,15 +2,15 @@
 using HarmonyLib;
 using System.Reflection;
 
-namespace BetterDoorWarning
+namespace CanFollower
 {
 	[BepInPlugin(GUID, NAME, VERSION)]
-	internal class BetterDoorWarning : BaseUnityPlugin
+	internal class CanFollower : BaseUnityPlugin
 	{
-		public static BetterDoorWarning instance;
-		private const string GUID = "BetterDoorWarning";
-		private const string NAME = "BetterDoorWarning";
-		private const string VERSION = "1.0.1";
+		public static CanFollower instance;
+		private const string GUID = "CanFollower";
+		private const string NAME = "CanFollower";
+		private const string VERSION = "1.0.0";
 
 		public static void Log(string message)
 		{

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ShipMaid.Patchers
+namespace CanFollower.Patchers
 {
 	public class CommandInfo
 	{

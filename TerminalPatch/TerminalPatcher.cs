@@ -1,5 +1,5 @@
-﻿using HarmonyLib;
-using ShipMaid.HelperFunctions;
+﻿using CanFollower.Patchers;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,23 +7,15 @@ using System.Text;
 using UnityEngine;
 using static UnityEngine.InputForUI.CommandEvent;
 
-namespace ShipMaid.Patchers
+namespace CanFollower.TerminalPatch
 {
 	// Inspired by TerminalApi Mod
 	public static class ShipMaidTerminalCommands
 	{
-		public static string PerformCleanup()
+		public static string SetCanFollowerPlayer()
 		{
-			ShipMaid.Log("Perform Cleanup Called from terminal");
-			LootOrganizingFunctions.OrganizeShipLoot();
-			return "Cleaning Ship\n\n";
-		}
-
-		public static string PerformStorageClosetCleanup()
-		{
-			ShipMaid.Log("Perform Storage Cleanup Called from terminal");
-			LootOrganizingFunctions.OrganizeStorageCloset();
-			return "Cleaning Storage\n\n";
+			CanFollower.Log("Setting the player to follow");
+			return $"Now following {CanFollowerFunctions.SetPlayerToCanAttack()}\n\n";
 		}
 	}
 
@@ -86,19 +78,11 @@ namespace ShipMaid.Patchers
 		public static List<CommandInfo> Commands = new(){
 			new()
 			{
-				Title = "cleanup",
-				Category = "ShipMaid",
-				TriggerNode = TerminalExtensions.CreateTerminalNode("cleanup", true),
-				Description = "Ship Maid Ship Cleanup",
-				DisplayTextSupplier = ShipMaidTerminalCommands.PerformCleanup,
-			},
-			new()
-			{
-				Title = "cleanup storage",
-				Category = "ShipMaid",
-				TriggerNode = TerminalExtensions.CreateTerminalNode("cleanup storage", true),
-				Description = "Ship Maid Storage Cleanup",
-				DisplayTextSupplier = ShipMaidTerminalCommands.PerformStorageClosetCleanup,
+				Title = "follow",
+				Category = "CanFollower",
+				TriggerNode = TerminalExtensions.CreateTerminalNode("follow", true),
+				Description = "Set Player to Follow with Soda",
+				DisplayTextSupplier = ShipMaidTerminalCommands.SetCanFollowerPlayer,
 			},
 			};
 
@@ -110,7 +94,7 @@ namespace ShipMaid.Patchers
 		{
 			Terminal = __instance;
 
-			ShipMaid.Log($"Adding Terminal Commands");
+			CanFollower.Log($"Adding Terminal Commands");
 			foreach (var command in Commands)
 			{
 				Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(TerminalExtensions.CreateTerminalKeyword(command.Title, false, command.TriggerNode));
