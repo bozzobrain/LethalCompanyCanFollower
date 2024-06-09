@@ -28,13 +28,6 @@ namespace CanFollower
 			if (currentPlayer == netManagerLC.connectedPlayers)
 				currentPlayer = 0;
 
-			CanFollower.Log($"new player {currentPlayer}");
-			if (StartOfRound.Instance != null && StartOfRound.Instance.OtherClients.ElementAt(currentPlayer) != null)
-			{
-				CanPlayerName = StartOfRound.Instance.OtherClients.ElementAt(currentPlayer).playerUsername;
-				CanFollower.Log($"new player {CanPlayerName}");
-			}
-
 			// Transmit curernt player RPC
 			SetPlayerToCanAttackServerRpc(currentPlayer);
 
@@ -43,22 +36,24 @@ namespace CanFollower
 
 		public static string SetPlayerToCanAttack(int player)
 		{
-			CanFollower.Log($"Setting player to attack {player}");
-			currentPlayer = player;
-			if (StartOfRound.Instance != null && StartOfRound.Instance.OtherClients.ElementAt(currentPlayer) != null)
-				CanPlayerName = StartOfRound.Instance.OtherClients.ElementAt(currentPlayer).playerUsername;
+			CanFollower.Log($"Setting player to attack player {currentPlayer}");
+			if (StartOfRound.Instance != null && StartOfRound.Instance.allPlayerScripts.ElementAt(currentPlayer) != null)
+			{
+				CanPlayerName = StartOfRound.Instance.allPlayerScripts.ElementAt(currentPlayer).playerUsername;
+				CanFollower.Log($"Player to attack username {CanPlayerName}");
+			}
 			// Transmit curernt player RPC
 			return CanPlayerName;
 		}
 
 		public static GameObject SpawnObject(UnityEngine.Vector3 position)
 		{
-			if (!spawnableItems.Any((DTItem x) => x.name.ToLower().Contains("Red Soda")))
+			if (!spawnableItems.Any((DTItem x) => x.name.ToLower().Contains("red soda")))
 			{
 				CanFollower.Log("No red sodas available - wait a round?");
 				return null;
 			}
-			var num3 = spawnableItems.Find((DTItem x) => x.name.ToLower().Contains("Red Soda")).id;
+			var num3 = spawnableItems.Find((DTItem x) => x.name.ToLower().Contains("red soda")).id;
 
 			GameObject newObject = UnityEngine.Object.Instantiate<GameObject>(StartOfRound.Instance.allItemsList.itemsList[num3].spawnPrefab, position, UnityEngine.Quaternion.identity);
 			ScanNodeProperties component = newObject.GetComponent<ScanNodeProperties>();
@@ -81,6 +76,7 @@ namespace CanFollower
 		{
 			DTItem item = default(DTItem);
 			string text = "Started Items:";
+			CanFollower.LogError("Started Items:");
 			AllItemsList allItemsList = StartOfRound.Instance.allItemsList;
 			text += $"{allItemsList.itemsList.Count} <- item 0";
 			for (int i = 0; i < allItemsList.itemsList.Count; i++)
@@ -89,6 +85,7 @@ namespace CanFollower
 				item.id = i;
 				item.prefab = allItemsList.itemsList[i].spawnPrefab;
 				spawnableItems.Add(item);
+				CanFollower.LogError($"{item.name}");
 				text += $"\n{i} | {item.name}";
 			}
 		}
@@ -100,14 +97,14 @@ namespace CanFollower
 			public GameObject prefab;
 		}
 
-		[HarmonyPatch(typeof(PlayerActions), "OnPingScan")]
+		[HarmonyPatch(typeof(HUDManager), "PingScan_performed")]
 		private static class Patch
 		{
-			private static CanFollowerFunctions canFollowerFunctions = new();
-
 			[HarmonyPostfix]
-			private static void OnPingScan(InputAction.CallbackContext context)
+			private static void PingScan_performed(InputAction.CallbackContext context)
 			{
+				GetAllItems();
+				CanFollower.Log($"Targeted player {CanPlayerName} current player {GameNetworkManager.Instance.localPlayerController.playerUsername}");
 				if (CanPlayerName == GameNetworkManager.Instance.localPlayerController.playerUsername)
 				{
 					// Handle can drop RPC

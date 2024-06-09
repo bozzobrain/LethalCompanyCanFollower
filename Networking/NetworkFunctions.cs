@@ -71,7 +71,6 @@ namespace CanFollower.Networking
 				return;
 			}
 
-			CanFollower.LogError("before lpc");
 			if (GameNetworkManager.Instance.localPlayerController.OwnerClientId != networkManager.LocalClientId)
 			{
 				if (networkManager.LogLevel <= LogLevel.Normal)
